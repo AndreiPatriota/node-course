@@ -1,0 +1,17 @@
+{
+  "name": "express-intro",
+  "version": "0.0.1",
+  "description": "first express project",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon main.js"
+  },
+  "author": "Andrei",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "express": "^4.18.2",
+    "nodemon": "^3.0.0"
+  }
+}
