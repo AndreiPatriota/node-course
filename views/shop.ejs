@@ -5,30 +5,27 @@
   <body>
 <%- include('includes/navigate') %>
 
-    <main>
+    <main class="container b-main b-main_products">
       <% if(prods.length > 0) {%>
-      <div class="grid">
+      <div>
         <% for(let prod of prods) {%>
-        <article class="card product-item">
-          <header class="card__header">
-            <h1 class="product__title"><%= prod.title %></h1>
+        <article class="b-card-product">
+          <header class="b-card-product__header">
+            <h3 class="b-card-product__title"><%= prod.title %></h3>
           </header>
-          <section class="card__image">
+          <div>
             <img
               src="images/blue-book-emoji-clipart-md.png"
               alt="A Book"
               title="Author: JoyPexels @ Creazilla"
+              class="b-card-product__img"
             />
-          </section>
-          <section class="card__content">
-            <h2 class="product__price">$19.99</h2>
-            <p class="product__description">
+            <p>$19.99</p>
+            <p>
               A very interesting book on how to sleepwalk while you work out.
             </p>
-          </section>
-          <section class="card__actions">
-            <button class="btn">Add to cart</button>
-          </section>
+            <button>Add to cart</button>
+          </div>
         </article>
         <%}%>
       </div>
