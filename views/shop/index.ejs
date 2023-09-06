@@ -1,28 +1,28 @@
-<%- include('includes/head') %>
+<%- include('../includes/head') %>
 
   </head>
 
   <body>
-<%- include('includes/navigate') %>
+<%- include('../includes/nav') %>
 
     <main class="container b-main b-main_products">
       <% if(prods.length > 0) {%>
-      <div>
+      <div class="b-cards-grid">
         <% for(let prod of prods) {%>
-        <article class="b-card-product">
-          <header class="b-card-product__header">
-            <h3 class="b-card-product__title"><%= prod.title %></h3>
+        <article class="b-card">
+          <header class="b-card__header">
+            <h3 class="b-card__title"><%= prod.title %></h3>
           </header>
           <div>
             <img
-              src="images/blue-book-emoji-clipart-md.png"
+              src=<%= prod.imageUrl %>
               alt="A Book"
               title="Author: JoyPexels @ Creazilla"
-              class="b-card-product__img"
+              class="b-card__img"
             />
-            <p>$19.99</p>
+            <p><%= prod.price %></p>
             <p>
-              A very interesting book on how to sleepwalk while you work out.
+              <%= prod.description %>
             </p>
             <button>Add to cart</button>
           </div>
@@ -35,4 +35,4 @@
       <%}%>
     </main>
 
-<%- include('includes/end') %>
+<%- include('../includes/end') %>

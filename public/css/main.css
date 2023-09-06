@@ -2,26 +2,34 @@
   background-color: #21303b;
   padding: 15px 40px;
 }
+
 .b-main_form {
   width: 70vw;
 }
 .b-main_products {
-  width: 40vw;
   padding-top: 30px;
 }
-.b-card-product {
-  margin-top: 0px;
-  margin-bottom: 10px;
-  padding-bottom: 20px;
+
+.b-cards-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: stretch;
 }
-.b-card-product__img {
+
+.b-card {
+  width: 20rem;
+  max-width: 95%;
+}
+.b-card__img {
   width: 50px;
   margin: auto;
 }
-.b-card-product__header {
+.b-card__header {
   padding: 10px 20px;
   margin-bottom: 20px;
 }
-.b-card-product__title {
+.b-card__title {
   margin: 2px;
 }
+
