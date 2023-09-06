@@ -3,32 +3,32 @@
     </head>
 
     <body>
-        <%- include('../includes/nav.ejs') %>
+        <%- include('../includes/navigation.ejs') %>
 
             <main>
                 <% if (prods.length > 0) { %>
-                    <div class="b-cards-grid">
+                    <div class="grid">
                         <% for (let product of prods) { %>
-                            <article class="b-card">
-                                <header>
-                                    <h1>
+                            <article class="card product-item">
+                                <header class="card__header">
+                                    <h1 class="product__title">
                                         <%= product.title %>
                                     </h1>
                                 </header>
-                                <div>
+                                <div class="card__image">
                                     <img src="<%= product.imageUrl %>" alt="<%= product.title %>">
                                 </div>
-                                <div>
-                                    <h2>$
+                                <div class="card__content">
+                                    <h2 class="product__price">$
                                         <%= product.price %>
                                     </h2>
-                                    <p>
+                                    <p class="product__description">
                                         <%= product.description %>
                                     </p>
                                 </div>
-                                <div>
+                                <div class="card__actions">
                                     <form action="/add-to-cart" method="POST">
-                                        <button>Add to Cart</button>
+                                        <button class="btn">Add to Cart</button>
                                     </form>
                                 </div>
                             </article>
