@@ -1,12 +1,30 @@
-const Sequelize = require('sequelize');
+const mongodb = require('mongodb');
+const MongoClient = mongodb.MongoClient;
 
-const dbName = 'node-complete';
-const dbUser = 'root';
-const password = '12345678';
+let _db;
 
-const sequelize = new Sequelize(dbName, dbUser, password, {
-  dialect: 'mysql',
-  host: 'localhost',
-});
+const connect2Mongo = (callback) => {
+  MongoClient.connect(
+    'mongodb+srv://dreiptrmongo:GQZPFEqpe3t0uY7L@nodecourse.0jtkdd5.mongodb.net/?retryWrites=true&w=majority&appName=AtlasApp'
+  )
+    .then((client) => {
+      console.log('Connected!');
 
-module.exports = sequelize;
+      const databaseName = 'shop';
+      _db = client.db(databaseName);
+      callback();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+const getDb = () => {
+  if (_db) {
+    return _db;
+  }
+  throw 'No database found';
+};
+
+exports.connect2Mongo = connect2Mongo;
+exports.getDb = getDb;

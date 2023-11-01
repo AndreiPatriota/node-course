@@ -5,14 +5,14 @@
     <body>
         <%- include('../includes/navigation.ejs') %>
         <main>
-            <% if (products.length > 0) { %>
+            <% if (listofCartItems.length > 0) { %>
                 <ul class="cart__item-list">
-                    <% products.forEach(p => { %>
+                    <% listofCartItems.forEach(cartItem => { %>
                         <li class="cart__item">
-                            <h1><%= p.title %></h1>
-                            <h2>Quantity: <%= p.cartItem.quantity %></h2>
+                            <h1><%= cartItem.title %></h1>
+                            <h2>Quantity: <%= cartItem.quantity %></h2>
                             <form action="/cart-delete-item" method="POST">
-                                <input type="hidden" value="<%= p.id %>" name="productId">
+                                <input type="hidden" value="<%= cartItem._id %>" name="productId">
                                 <button class="btn danger" type="submit">Delete</button>
                             </form>
                         </li>

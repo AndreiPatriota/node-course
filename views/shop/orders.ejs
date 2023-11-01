@@ -8,10 +8,10 @@
             <ul>
                 <% for( order of orders) {%>
                 <li>
-                    <h1># <%= order.id %></h1>
+                    <h1># <%= order._id %></h1>
                     <ul>
-                    <% for( product of order.products ) {%>
-                    <li><%= product.title %> (<%= product.orderItem.quantity %>)</li>
+                    <% for( item of order.items ) {%>
+                    <li><%= item.title %> (<%= item.quantity %>)</li>
                     <%}%>
                     </ul>
                 </li>
