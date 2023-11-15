@@ -1,7 +1,8 @@
 const Product = require('../models/product');
+const Order = require('../models/orders');
 
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll()
+  Product.find()
     .then((listofProducts) => {
       res.render('shop/product-list', {
         prods: listofProducts,
@@ -15,7 +16,7 @@ exports.getProducts = (req, res, next) => {
 };
 
 exports.getProduct = (req, res, next) => {
-  const prodId = req.params.productId;
+  const prodId = req.params.productId.toString();
 
   Product.findById(prodId)
     .then((product) => {
@@ -31,7 +32,7 @@ exports.getProduct = (req, res, next) => {
 };
 
 exports.getIndex = (req, res, next) => {
-  Product.fetchAll()
+  Product.find({})
     .then((listofProducts) => {
       res.render('shop/index', {
         prods: listofProducts,
@@ -46,12 +47,20 @@ exports.getIndex = (req, res, next) => {
 
 exports.getCart = (req, res, next) => {
   req.user
-    .getCartItems()
-    .then((listofCartItems) => {
+    .populate('cart.items.productId')
+    .then((user) => {
+      const cartItems = user.cart.items.map((item) => {
+        return {
+          title: item.productId.title,
+          quantity: item.quantity,
+          _id: item.productId._id,
+        };
+      });
+
       res.render('shop/cart', {
+        listofCartItems: cartItems,
+        pageTitle: 'Cart',
         path: '/cart',
-        pageTitle: 'Your Cart',
-        listofCartItems: listofCartItems,
       });
     })
     .catch((err) => {
@@ -79,24 +88,7 @@ exports.postCartDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
 
   req.user
-    .getCartItems()
-    .then((listofCartItems) => {
-      const item2Delete = listofCartItems.find((cartItem) => {
-        return cartItem._id.toString() === prodId.toString();
-      });
-
-      const itemIndex = listofCartItems.indexOf(item2Delete);
-      const newQuantity = item2Delete.quantity - 1;
-      if (newQuantity > 0) {
-        /* There are still items */
-        req.user.cart.items[itemIndex].quantity = newQuantity;
-      } else {
-        /* No items left */
-        req.user.cart.items.splice(itemIndex, 1);
-      }
-
-      return req.user.save();
-    })
+    .removeFromCart(prodId)
     .then((data) => {
       res.redirect('/cart');
     })
@@ -106,8 +98,8 @@ exports.postCartDeleteProduct = (req, res, next) => {
 };
 
 exports.getOrders = (req, res, next) => {
-  req.user
-    .getOrders()
+  Order.find({ userId: req.user._id })
+    .populate('userId', 'name -_id')
     .then((listofOrders) => {
       res.render('shop/orders', {
         path: '/orders',
@@ -118,18 +110,13 @@ exports.getOrders = (req, res, next) => {
     .catch((err) => {
       console.log(err);
     });
-  /* .getOrders({ include: ['products'] })
-  res.render('shop/orders', {
-    path: '/orders',
-    pageTitle: 'Your Orders',
-    orders: listofOrders
-    
-    .then((listofOrders) => {
-      });
-    })
-    .catch((err) => {
-      console.log(err);
-    }); */
+  // req.user.
+  //   .getOrders()
+  //   .then((listofOrders) => {
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
 };
 
 exports.getCheckout = (req, res, next) => {
@@ -141,13 +128,35 @@ exports.getCheckout = (req, res, next) => {
 
 exports.postOrder = (req, res, next) => {
   req.user
-    .addOrder()
+    .populate('cart.items.productId')
+    .then((user) => {
+      const productItems = user.cart.items.map((item) => {
+        return {
+          productId: item.productId,
+          title: item.productId.title,
+          unitPrice: item.productId.price,
+          quantity: item.quantity,
+        };
+      });
+
+      const totalPrice = productItems.reduce((total, element) => {
+        return total + element.unitPrice * element.quantity;
+      }, 0.0);
+
+      const order = new Order({
+        userId: user._id,
+        products: productItems,
+        total: totalPrice,
+      });
+
+      return order.save();
+    })
     .then((data) => {
-      req.user.cart = { items: [] };
+      req.user.cart.items = [];
       return req.user.save();
     })
     .then((data) => {
-      console.log('The order has been taken!');
+      console.log('Your order has been posted!');
       res.redirect('/orders');
     })
     .catch((err) => {

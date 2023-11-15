@@ -7,12 +7,14 @@
             <% if(orders.length > 0) {%>
             <ul>
                 <% for( order of orders) {%>
-                <li>
-                    <h1># <%= order._id %></h1>
+                    <li>
+                        <h1># <%= order._id %></h1>
+                        <h2>User: <%= order.userId.name %></h2>
                     <ul>
-                    <% for( item of order.items ) {%>
+                    <% for( item of order.products ) {%>
                     <li><%= item.title %> (<%= item.quantity %>)</li>
                     <%}%>
+                    <h3>Total: <%= order.total %></h3>
                     </ul>
                 </li>
                 <% } %>
