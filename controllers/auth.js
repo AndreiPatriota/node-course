@@ -24,7 +24,12 @@ exports.postLogin = (req, res, next) => {
       .then((listofUsers) => {
         req.session.userId = listofUsers[0]._id;
         req.session.isLoggedIn = true;
-        res.redirect('/');
+        return req.session.save((err) => {
+          if (err) {
+            console.log(err);
+          }
+          res.redirect('/');
+        });
       })
       .catch((err) => {
         console.log(err);
@@ -35,4 +40,11 @@ exports.postLogin = (req, res, next) => {
 
   // console.log(`The user e-mail is ${email}, and the password is ${password}`);
   /* here goes the authenticaion part I suppose */
+};
+
+exports.postLogout = (req, res, next) => {
+  req.session.destroy((err) => {
+    console.log(err);
+    res.redirect('/');
+  });
 };
