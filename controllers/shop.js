@@ -23,8 +23,8 @@ exports.getProduct = (req, res, next) => {
   Product.findById(prodId)
     .then((product) => {
       res.render('shop/product-detail', {
-        product: product,
-        pageTitle: product.title,
+        product: product._doc,
+        pageTitle: product._doc.title,
         path: '/products',
         isLoggedIn: req.session.isLoggedIn,
       });
@@ -51,16 +51,16 @@ exports.getCart = (req, res, next) => {
   req.user
     .populate('cart.items.productId')
     .execPopulate()
-    .then(user => {
+    .then((user) => {
       const products = user.cart.items;
       res.render('shop/cart', {
         path: '/cart',
         pageTitle: 'Your Cart',
         products: products,
-        isLoggedIn: req.session.isLoggedIn
+        isLoggedIn: req.session.isLoggedIn,
       });
     })
-    .catch(err => console.log(err));
+    .catch((err) => console.log(err));
 };
 
 exports.postCart = (req, res, next) => {
