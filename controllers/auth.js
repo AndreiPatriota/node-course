@@ -1,49 +1,38 @@
 const User = require('../models/user');
 
 exports.getLogin = (req, res, next) => {
-  if (req.session.user) {
-    console.log('Tá logado, Carai!');
-  } else {
-    console.log('estou seguindo....a gsuis cristo!');
-  }
-
   res.render('auth/login', {
     path: '/login',
     pageTitle: 'Login',
-    isLoggedIn: req.session.isLoggedIn,
+    isAuthenticated: false
+  });
+};
+
+exports.getSignup = (req, res, next) => {
+  res.render('auth/signup', {
+    path: '/signup',
+    pageTitle: 'Signup',
+    isAuthenticated: false
   });
 };
 
 exports.postLogin = (req, res, next) => {
-  console.log(req.body);
-  const { email, password } = req.body;
-
-  if (password === 'bundinha' && email === 'bundinha@linda.com') {
-    User.find({ email: 'bundinha@linda.com' })
-      .populate('cart.items.productId')
-      .then((listofUsers) => {
-        req.session.userId = listofUsers[0]._id;
-        req.session.isLoggedIn = true;
-        return req.session.save((err) => {
-          if (err) {
-            console.log(err);
-          }
-          res.redirect('/');
-        });
-      })
-      .catch((err) => {
+  User.findById('5bab316ce0a7c75f783cb8a8')
+    .then(user => {
+      req.session.isLoggedIn = true;
+      req.session.user = user;
+      req.session.save(err => {
         console.log(err);
+        res.redirect('/');
       });
-  } else {
-    res.redirect('/');
-  }
-
-  // console.log(`The user e-mail is ${email}, and the password is ${password}`);
-  /* here goes the authenticaion part I suppose */
+    })
+    .catch(err => console.log(err));
 };
 
+exports.postSignup = (req, res, next) => {};
+
 exports.postLogout = (req, res, next) => {
-  req.session.destroy((err) => {
+  req.session.destroy(err => {
     console.log(err);
     res.redirect('/');
   });
