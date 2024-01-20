@@ -6,12 +6,13 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const csrf = require('csurf');
+const flash = require('connect-flash');
 
 const errorController = require('./controllers/error');
 const User = require('./models/user');
 
 const MONGODB_URI =
-  'mongodb+srv://maximilian:9u4biljMQc4jjqbe@cluster0-ntrwp.mongodb.net/shop';
+'mongodb+srv://dreiptrmongo:x03KanII8YLxZ1Gz@nodecourse.0jtkdd5.mongodb.net/shop?retryWrites=true&w=majority&appName=AtlasApp';
 
 const app = express();
 const store = new MongoDBStore({
@@ -38,6 +39,7 @@ app.use(
   })
 );
 app.use(csrfProtection);
+app.use(flash());
 
 app.use((req, res, next) => {
   if (!req.session.user) {
