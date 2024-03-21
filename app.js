@@ -12,12 +12,12 @@ const errorController = require('./controllers/error');
 const User = require('./models/user');
 
 const MONGODB_URI =
-  'mongodb+srv://dreiptrmongo:x03KanII8YLxZ1Gz@nodecourse.0jtkdd5.mongodb.net/shop?retryWrites=true&w=majority&appName=AtlasApp';
+  'mongodb+srv://maximilian:9u4biljMQc4jjqbe@cluster0-ntrwp.mongodb.net/shop';
 
 const app = express();
 const store = new MongoDBStore({
   uri: MONGODB_URI,
-  collection: 'sessions',
+  collection: 'sessions'
 });
 const csrfProtection = csrf();
 
@@ -35,7 +35,7 @@ app.use(
     secret: 'my secret',
     resave: false,
     saveUninitialized: false,
-    store: store,
+    store: store
   })
 );
 app.use(csrfProtection);
@@ -46,11 +46,11 @@ app.use((req, res, next) => {
     return next();
   }
   User.findById(req.session.user._id)
-    .then((user) => {
+    .then(user => {
       req.user = user;
       next();
     })
-    .catch((err) => console.log(err));
+    .catch(err => console.log(err));
 });
 
 app.use((req, res, next) => {
@@ -65,15 +65,11 @@ app.use(authRoutes);
 
 app.use(errorController.get404);
 
-const PORT = 3000;
-
 mongoose
   .connect(MONGODB_URI)
-  .then((result) => {
-    app.listen(PORT, () => {
-      console.log(`Server at port http://localhost:${PORT}`);
-    });
+  .then(result => {
+    app.listen(3000);
   })
-  .catch((err) => {
+  .catch(err => {
     console.log(err);
   });

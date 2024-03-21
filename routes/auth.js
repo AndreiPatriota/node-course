@@ -1,6 +1,5 @@
 const express = require('express');
-const { check, body } = require('express-validator');
-const bcrypt = require('bcryptjs');
+const { check, body } = require('express-validator/check');
 
 const authController = require('../controllers/auth');
 const User = require('../models/user');
@@ -14,26 +13,12 @@ router.get('/signup', authController.getSignup);
 router.post(
   '/login',
   [
-    body('email', 'Please, enter a valid email!').isEmail(),
-    body('password')
+    body('email')
+      .isEmail()
+      .withMessage('Please enter a valid email address.'),
+    body('password', 'Password has to be valid.')
+      .isLength({ min: 5 })
       .isAlphanumeric()
-      .isLength({ min: 1, max: 10 })
-      .custom((value, { req }) => {
-        return User.findOne({ email: req.body.email })
-          .then((user) => {
-            if (!user) {
-              throw new Error('User does not exist!');
-            }
-
-            return bcrypt.compare(value, user.password).then((doMatch) => {
-              if (!doMatch) {
-                throw new Error('Password does not match!');
-              }
-
-              req.session.user = user;
-            });
-          });
-      }),
   ],
   authController.postLogin
 );
@@ -43,32 +28,32 @@ router.post(
   [
     check('email')
       .isEmail()
-      .withMessage('Please, insert a valid email  address!')
+      .withMessage('Please enter a valid email.')
       .custom((value, { req }) => {
         // if (value === 'test@test.com') {
-        //   throw new Error('This email is not a good choice!');
+        //   throw new Error('This email address if forbidden.');
         // }
         // return true;
-        return User.findOne({ email: value }).then((user) => {
-          if (user) {
+        return User.findOne({ email: value }).then(userDoc => {
+          if (userDoc) {
             return Promise.reject(
-              'E-mail already exists, please, pick a dfferent one!'
+              'E-Mail exists already, please pick a different one.'
             );
           }
         });
       }),
     body(
       'password',
-      'Please, enter an alphanumeric passwrod with at leats 5 characters but no more than 10'
+      'Please enter a password with only numbers and text and at least 5 characters.'
     )
-      .isLength({ min: 5, max: 10 })
+      .isLength({ min: 5 })
       .isAlphanumeric(),
     body('confirmPassword').custom((value, { req }) => {
       if (value !== req.body.password) {
-        throw new Error('Password confirmation does not match');
+        throw new Error('Passwords have to match!');
       }
       return true;
-    }),
+    })
   ],
   authController.postSignup
 );
